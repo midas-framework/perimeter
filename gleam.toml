@@ -1,0 +1,6 @@
+name = "perimeter"
+
+[docs]
+links = [
+  { title = 'GitHub', href = 'https://github.com/midas-framework/perimeter' }
+]
