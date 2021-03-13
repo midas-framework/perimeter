@@ -4,7 +4,25 @@ Gleam is a beautiful functional language, Perimeter helps interact with the outs
 
 - Error Handling/Reporting
 - Input Validation
-- Telemetry (Comming Soon)
+- Telemetry/Observability (Comming Soon)
+- Service wrappers
+
+```rust
+import perimeter/input/http_request
+
+pub fn handle(request) {
+    try raw = input.request_json(request)
+    try raw = input.request_query()
+    // these are a mess because integers would be strings here.
+    try raw = input.request_form()
+    try user_id = json.required(raw, "user", as_uuid)
+    |> result.map_error(json.to_report)
+}
+```
+
+
+Have span context as the current span before it is closed,
+wire up sentry
 
 ## Assumptions
 
@@ -26,6 +44,7 @@ Just that we can provide one that is "good enough" for the early days of a proje
 Error is a really bad name for why a program didn't give you the output you asked for.
 
 > Can I take username Bob?
+>
 > ERROR, unfortunetly that name is already taken.
 
 I would argue that if the username Bob is already taken there is no error in this program.
