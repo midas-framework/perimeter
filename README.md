@@ -160,6 +160,18 @@ scrubs flow upstream as follows
 - ServiceUnavailable -> ServiceUnavailable
 - ServiceError -> ServiceError
 
+### Scope
+
+This project is currently testing the idea or a unified error approach. 
+It both defines the error types and uses them.
+
+For these reason this project includes wrappers to common utilites that I would hope would be extracted in the future. i.e.
+
+1. `perimeter/service/http_client` is a wrapper around `gleam/httpc` that adds a `to_report` function. 
+If the error report type was commonly used this could move to `gleam/httpc`
+
+2. `perimeter/email_address` defines an `EmailAddress` type, I would expect this to move to a library for handling email addresses (or even stdlib)
+
 ### Appendix: Other names
 
 Perimeter could otherwise be called Shell, from "functional core imperitive shell", but that has to many other meanings in programming.
