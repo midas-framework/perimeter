@@ -1,6 +1,6 @@
 {application, perimeter,
  [{description, "A Gleam project"},
-  {vsn, "1.0.0"},
+  {vsn, "0.1.0"},
   {registered, []},
   {applications,
    [kernel,

@@ -3,7 +3,7 @@
 Gleam is a beautiful functional language, Perimeter helps interact with the outside world.
 
 - Error Handling/Reporting
-- Input Validation
+- Input Validation (Including email_address uuids)
 - Telemetry/Observability (Comming Soon)
 - Service wrappers
 
@@ -17,6 +17,10 @@ pub fn handle(request) {
     try raw = input.request_form()
     try user_id = json.required(raw, "user", as_uuid)
     |> result.map_error(json.to_report)
+
+    http_request.required_header
+    http_request.post_body(as_json)
+    http_request.input_error_to_report()
 }
 ```
 
@@ -43,7 +47,7 @@ Just that we can provide one that is "good enough" for the early days of a proje
 
 Error is a really bad name for why a program didn't give you the output you asked for.
 
-> Can I take username Bob?
+> Can I take the username 'Bob'?
 >
 > ERROR, unfortunetly that name is already taken.
 
@@ -72,7 +76,7 @@ Any scrub, must be the result of a problem in input, state, logic or one of thos
 This division is how we classify scrubs (errors)
 
 ```rust
-pub type Scrub {
+pub type Kind {
   // No output because of problem with arguments/request/caller   
   RejectedInput
 
@@ -109,9 +113,6 @@ scrubs flow upstream as follows
 - LogicError -> ServiceError
 - ServiceUnavailable -> ServiceUnavailable
 - ServiceError -> ServiceError
-
-
-
 
 ### Appendix: Other names
 
