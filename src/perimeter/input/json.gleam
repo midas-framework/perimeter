@@ -6,8 +6,8 @@
 import gleam/atom
 import gleam/dynamic
 import gleam/option.{None, Some}
-import gleam_uuid.{UUID}
-import perimeter/email_address.{EmailAddress}
+import gleam_uuid
+import perimeter/email_address
 import perimeter/input.{CastFailure, NotProvided}
 
 pub fn required(raw, key, cast) {
@@ -44,7 +44,7 @@ pub fn as_email(raw) {
         Ok(value) -> Ok(value)
         Error(Nil) -> Error("email address")
       }
-    Error(reason) -> Error("email address")
+    Error(_) -> Error("email address")
   }
 }
 
@@ -63,13 +63,13 @@ pub fn as_uuid(raw) {
 pub fn as_string(raw) {
   case dynamic.string(raw) {
     Ok(value) -> Ok(value)
-    Error(reason) -> Error("UTF-8 string")
+    Error(_) -> Error("UTF-8 string")
   }
 }
 
 pub fn as_int(raw) {
   case dynamic.int(raw) {
     Ok(value) -> Ok(value)
-    Error(reason) -> Error("integer")
+    Error(_) -> Error("integer")
   }
 }

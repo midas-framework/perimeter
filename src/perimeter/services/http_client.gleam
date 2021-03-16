@@ -12,7 +12,7 @@ pub type Failure {
   ConnectionFailure(List(Dynamic))
 }
 
-pub fn to_report(failure) {
+pub fn to_report(_failure) {
   Report(
     Unprocessable,
     "Connection failure",

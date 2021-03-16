@@ -45,3 +45,15 @@ pub fn get_form(request) {
       ))
   }
 }
+
+pub fn get_query(request) {
+  case http.get_query(request) {
+    Ok(query) -> Ok(query)
+    Error(Nil) ->
+      Error(Report(
+        RejectedInput,
+        "Invalid query",
+        "The query is improperly formatted",
+      ))
+  }
+}

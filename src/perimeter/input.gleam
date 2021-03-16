@@ -3,10 +3,10 @@ import gleam/bit_string
 import gleam/dynamic
 import gleam/list
 import gleam/map
-import gleam/option.{None, Some}
+import gleam/option
 import gleam/string
 import gleam/uri
-import gleam/http.{Request}
+import gleam/http
 import gleam/json
 import gleam_uuid
 import perimeter/scrub.{RejectedInput, Report, ServiceError}

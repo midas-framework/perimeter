@@ -7,26 +7,72 @@ Gleam is a beautiful functional language, Perimeter helps interact with the outs
 - Telemetry/Observability (Comming Soon)
 - Service wrappers
 
+## Quickstart
+
+API client that safely handles a call to an external service and parsing the response.
+
 ```rust
-import perimeter/input/http_request
+// my_app/api_client
+import gleam/result
+import perimeter/email_address.{EmailAddress}
+import perimeter/services/http_client
+import perimeter/input/http_response
+import perimeter/input/json
 
-pub fn handle(request) {
-    try raw = input.request_json(request)
-    try raw = input.request_query()
-    // these are a mess because integers would be strings here.
-    try raw = input.request_form()
-    try user_id = json.required(raw, "user", as_uuid)
-    |> result.map_error(json.to_report)
+pub type User{
+  User(name: String, age: Option(Int), email: EmailAddress)
+}
 
-    http_request.required_header
-    http_request.post_body(as_json)
-    http_request.input_error_to_report()
+fn cast_user(raw) {
+  try name = json.required(raw, "name", json.as_string)
+  try age = json.optional(raw, "age", json.as_int)
+  try email = json.required(raw, "email", json.as_email)
+}
+
+pub fn get_user(user_id) {
+  try response = http_client.send(request)
+  |> result.map_error(http_client.to_report)
+  
+  try raw = http_response.get_json(response)
+
+  try user = cast_user(raw) 
+  |> result.map_error(input.to_server_report)
+
+  Ok(user)
 }
 ```
 
+Server module that handles external input, calls the API server and returns a consistent report for all errors.
 
-Have span context as the current span before it is closed,
-wire up sentry
+```rust
+import gleam/result
+import perimeter/input/http_request
+import perimeter/input/http_query
+import perimeter/scrub
+import my_app/api_client
+
+pub fn params(raw) {
+  http_query.required(raw, "user_id", http_query.as_uuid)
+}
+
+fn do_handle(request) {
+  try raw = http_request.get_query(rquest)
+
+  try user_id = params(raw)
+  |> result.map_error(input.to_report)
+  
+  try user = api_client.get_user(user_id)
+  Ok(response_from_user(user))
+}
+
+pub fn handle(request) {
+  case do_handle(request) {
+    Ok(response) -> reponse
+    Error(report) -> scrub.to_response(report)
+  }
+}
+```
+
 
 ## Assumptions
 
